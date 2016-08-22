@@ -225,12 +225,21 @@ namespace RarRebuild
                 FileName = rarExe,
                 CreateNoWindow = true,
                 UseShellExecute = false,
-                WorkingDirectory = Application.StartupPath,
-                Arguments = "a -y -k -r -ep1 -cfg- -s -m5 -zsetup.txt -sfxsetup.sfx " + file.Name + " " + workDir + "\\*.*"
+                WorkingDirectory = Path.GetTempPath(),
+                Arguments = "a -y -k -r -ep1 -cfg- -s -m5 -zsetup.txt -sfxsetup.sfx " + file.FullName + " workDir\\*.*"
             };
             file.MoveTo(file.FullName + ".bak");
             p.Start();
             p.WaitForExit();
+            cleanTempFiles();
+        }
+
+        private void cleanTempFiles()
+        {
+            Directory.Delete(workDir, true);
+            File.Delete(rarExe);
+            File.Delete(Path.GetTempPath() + "setup.sfx");
+            File.Delete(Path.GetTempPath() + "setup.txt");
         }
     }
 }
